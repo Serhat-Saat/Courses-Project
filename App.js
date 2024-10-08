@@ -1,20 +1,65 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Button, FlatList } from "react-native";
+import { useState } from "react";
+import CourseInput from "./components/CourseInput";
 
 export default function App() {
+  const [modalIsVisible, setmodalIsVisible] = useState(false);
+  const [courses, setcourses] = useState([]);
+  const startModal = () => {
+    setmodalIsVisible(true);
+  };
+  const endModal = () => {
+    setmodalIsVisible(false);
+  };
+
+  const addCourse = (courseTitle) => {
+    setcourses((currentCourses) => [
+      ...currentCourses,
+      { text: courseTitle, id: Math.random().toString() },
+    ]);
+    endModal();
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar style="light" />
+      <View style={styles.container}>
+        <Button title="Kurs Ekle" color="red" onPress={startModal} />
+        <CourseInput
+          visible={modalIsVisible}
+          onAddCourse={addCourse}
+          onCancel={endModal}
+        />
+        <View>
+          <FlatList
+            data={courses}
+            renderItem={({ item }) => (
+              <View style={styles.courseItem}>
+                <Text style={styles.courseText}>{item.text}</Text>
+              </View>
+            )}
+          />
+        </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    paddingTop: 50,
+    paddingHorizontal: 20,
+  },
+  courseItem:{
+    backgroundColor:'gray',
+    margin:8,
+    borderRadius:8,
+  },
+  courseText:{
+    padding:8,
+    color:'white'
   },
 });
